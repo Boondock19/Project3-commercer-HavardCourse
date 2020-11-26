@@ -69,7 +69,7 @@ function load_mailbox(mailbox) {
     };
     
     const header5 = document.createElement("h5");
-    header5.innerHTML="This is the testing of inbox page COLORS";
+    header5.innerHTML="This is the testing of inbox page ";
     document.querySelector("#emails-view").append(header5);
   }
   
