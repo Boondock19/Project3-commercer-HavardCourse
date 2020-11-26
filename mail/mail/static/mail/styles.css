@@ -3,6 +3,8 @@ textarea {
 }
 
 div .email {
-    background-color: azure;
+    background-color: rgb(7, 87, 87);
     margin: 5px;
+    border: solid;
+    border-color: black;
 }
