@@ -30,4 +30,28 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  if (mailbox==="inbox") {
+    fetch('/emails/inbox')
+    .then(response => response.json())
+    .then(emails => {
+      console.log(emails);
+      emails.forEach(add_email)
+    });
+    
+    // Create new email
+    function add_email(contents) {
+      const email = document.createElement("div");
+      email.className="Email";
+      email.innerHTML=contents;
+      document.querySelector("#emails-view").append(email);
+    
+    };
+    
+    const header5 = document.createElement("h5");
+    header5.innerHTML="This is the testing of inbox page joseMatias";
+    document.querySelector("#emails-view").append(header5);
+  }
+  
+  
 }

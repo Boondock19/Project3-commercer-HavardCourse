@@ -1,3 +1,8 @@
 textarea {
     min-height: 400px;
 }
+
+div .email {
+    background-color: azure;
+    margin: 5px;
+}
