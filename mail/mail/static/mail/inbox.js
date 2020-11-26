@@ -20,6 +20,23 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+  const NewEmail = document.querySelector("#SendEmail")
+  NewEmail.addEventListener("click", () => {
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+      recipients: document.querySelector('#compose-recipients').value,
+      subject: document.querySelector('#compose-subject').value,
+      body:  document.querySelector('#compose-body').value,
+      })
+
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log(result);
+    });
+
+  });
 }
 
 function load_mailbox(mailbox) {
@@ -43,13 +60,16 @@ function load_mailbox(mailbox) {
     function add_email(contents) {
       const email = document.createElement("div");
       email.className="Email";
-      email.innerHTML=contents;
+      email.innerHTML=`<div class="card-body" id="item-${contents.id}">
+      ${contents.subject} | ${contents.sender} | ${contents.timestamp}
+      </div>`;
       document.querySelector("#emails-view").append(email);
+      
     
     };
     
     const header5 = document.createElement("h5");
-    header5.innerHTML="This is the testing of inbox page joseMatias";
+    header5.innerHTML="This is the testing of inbox page 3";
     document.querySelector("#emails-view").append(header5);
   }
   
