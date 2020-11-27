@@ -34,8 +34,8 @@ function compose_email() {
     .then(response => response.json())
     .then(result => {
       console.log(result);
+      load_mailbox("sent")
     });
-
   });
 }
 
@@ -53,25 +53,38 @@ function load_mailbox(mailbox) {
     .then(response => response.json())
     .then(emails => {
       console.log(emails);
-      emails.forEach(add_email)
+      emails.forEach(function (emails) {
+        const email = document.createElement("div");
+        email.className="Email";
+        email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
+        ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
+        </div>`;
+        document.querySelector("#emails-view").append(email);
+      });
+  })
+}
+    
+  if (mailbox==="sent") {
+     fetch('/emails/sent')
+    .then(response => response.json())
+    .then(emails => {
+      console.log(emails);
+      emails.forEach(function (emails) {
+        const email = document.createElement("div");
+        email.className="Email";
+        email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
+        ${emails.recipients} this is sent | ${emails.subject} | ${emails.timestamp}
+        </div>`;
+        document.querySelector("#emails-view").append(email);
+       })
     });
+  }
     
-    // Create new email
-    function add_email(contents) {
-      const email = document.createElement("div");
-      email.className="Email";
-      email.innerHTML=`<div class="card-body email" id="item-${contents.id}">
-      ${contents.subject} | ${contents.sender} | ${contents.timestamp}
-      </div>`;
-      document.querySelector("#emails-view").append(email);
-
+  
     
-    };
     
     const header5 = document.createElement("h5");
     header5.innerHTML="This is the testing of inbox page ";
     document.querySelector("#emails-view").append(header5);
-  }
-  
-  
 }
+
