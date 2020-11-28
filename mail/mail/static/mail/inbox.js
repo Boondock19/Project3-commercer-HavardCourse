@@ -15,6 +15,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-id-view').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -39,11 +40,34 @@ function compose_email() {
   });
 }
 
+function load_email_id(id) {
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-id-view').style.display = 'block';
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+    console.log(email)
+    var email_body=document.createElement("div");
+    email_body.innerHTML=`<hr>
+    <div><p class="Bold" >From: </p> ${email.sender}</div>
+    <div><p class="Bold" >To: </p> ${email.recipients}</div>
+    <div><p class="Bold" >Subject: </p> ${email.subject}</div>
+    <div><p class="Bold" >TimeStamp: </p> ${email.timestamp}</div>
+    <div> <button type="button" class="btn btn-outline-dark" >REPLY</button> </div>    
+    <hr>  
+    <p>${email.body}</p>
+    `;
+    document.querySelector('#email-id-view').append(email_body);
+  })
+}
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-id-view').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -55,10 +79,29 @@ function load_mailbox(mailbox) {
       console.log(emails);
       emails.forEach(function (emails) {
         const email = document.createElement("div");
-        email.className="Email";
         email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
         ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
         </div>`;
+        email.addEventListener("click",function() {
+          if (emails.read=="false"){
+            fetch(`/emails/${emails.id}`,{
+              method: 'PUT',
+              body: JSON.stringify({
+                read: true
+              })
+            })
+            
+          } else {
+            fetch(`/emails/${emails.id}`,{
+              method: 'PUT',
+              body: JSON.stringify({
+                read: true
+              })
+            })
+            
+          }
+          load_email_id(`${emails.id}`)
+        })
         document.querySelector("#emails-view").append(email);
       });
   })
