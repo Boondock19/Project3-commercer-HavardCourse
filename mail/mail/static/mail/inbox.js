@@ -49,11 +49,11 @@ function load_email_id(id) {
   .then(email => {
     console.log(email)
     var email_body=document.createElement("div");
-    email_body.innerHTML=`<hr>
-    <div><p class="Bold" >From: </p> ${email.sender}</div>
-    <div><p class="Bold" >To: </p> ${email.recipients}</div>
-    <div><p class="Bold" >Subject: </p> ${email.subject}</div>
-    <div><p class="Bold" >TimeStamp: </p> ${email.timestamp}</div>
+    email_body.innerHTML=`
+    <div><span class="font-weight-bold" >From: </span> ${email.sender}</div>
+    <div><span class="font-weight-bold" >To: </span> ${email.recipients}</div>
+    <div><span class="font-weight-bold" >Subject: </span> ${email.subject}</div>
+    <div><span class="font-weight-bold" >TimeStamp: </span> ${email.timestamp}</div>
     <div> <button type="button" class="btn btn-outline-dark" >REPLY</button> </div>    
     <hr>  
     <p>${email.body}</p>
