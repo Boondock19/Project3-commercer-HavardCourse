@@ -3,7 +3,14 @@ textarea {
 }
 
 div .email {
-    background-color: rgb(19, 148, 148);
+    background-color: white;
+    margin: 5px;
+    border: solid;
+    border-color: black;
+}
+
+div .email-readed {
+    background-color: rgb(119, 117, 117);
     margin: 5px;
     border: solid;
     border-color: black;
