@@ -48,18 +48,78 @@ function load_email_id(id) {
   .then(response => response.json())
   .then(email => {
     console.log(email)
+    console.log(email.archived)
+    console.log("El de arriba es el estado de archived")
     const email_body=document.createElement("div");
     email_body.className="Email_id"
-    email_body.innerHTML=`
-    <div><span class="font-weight-bold" >From: </span> ${email.sender}</div>
-    <div><span class="font-weight-bold" >To: </span> ${email.recipients}</div>
-    <div><span class="font-weight-bold" >Subject: </span> ${email.subject}</div>
-    <div><span class="font-weight-bold" >TimeStamp: </span> ${email.timestamp}</div>
-    <div> <button type="button" class="btn btn-outline-dark" >REPLY</button> </div>    
-    <hr>  
-    <p>${email.body}</p>
-    `;
-    document.querySelector('#email-id-view').append(email_body);
+    if (!email.archived) {
+      console.log("ENTRO EN EL ARCHIVE==FALSE")
+      email_body.innerHTML=`
+      <div><span class="font-weight-bold" >From: </span> ${email.sender}</div>
+      <div><span class="font-weight-bold" >To: </span> ${email.recipients}</div>
+      <div><span class="font-weight-bold" >Subject: </span> ${email.subject}</div>
+      <div><span class="font-weight-bold" >TimeStamp: </span> ${email.timestamp}</div>    
+      <hr>  
+      <p>${email.body}</p>
+      `;
+      document.querySelector('#email-id-view').append(email_body);
+      // Creating a butto with eventhandler for reply action
+      const Reply=document.createElement("button");
+      Reply.className="btn btn-outline-dark"
+      Reply.innerHTML=`REPLY`
+      document.querySelector('#email-id-view').append(Reply);
+       // Creating a butto with eventhandler for archive action
+      const Archive=document.createElement("button");
+      Archive.innerHTML=`Archive`
+      Archive.className="btn btn-outline-success"
+      Archive.addEventListener("click",function (){
+        fetch(`/emails/${email.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              archived: true
+          })
+        })
+        
+        load_mailbox("inbox")
+        
+      })
+      document.querySelector('#email-id-view').append(Archive);
+    } else {
+      console.log("ENTRO EN EL ARCHIVE==TRUE")
+      email_body.innerHTML=`
+      <div><span class="font-weight-bold" >From: </span> ${email.sender}</div>
+      <div><span class="font-weight-bold" >To: </span> ${email.recipients}</div>
+      <div><span class="font-weight-bold" >Subject: </span> ${email.subject}</div>
+      <div><span class="font-weight-bold" >TimeStamp: </span> ${email.timestamp}</div>   
+      <hr>  
+      <p>${email.body}</p>
+      `;
+      document.querySelector('#email-id-view').append(email_body);
+      document.querySelector('#email-id-view').append(email_body);
+      // Creating a butto with eventhandler for reply action
+      const Reply=document.createElement("button");
+      Reply.className="btn btn-outline-dark"
+      Reply.innerHTML=`REPLY`
+      document.querySelector('#email-id-view').append(Reply);
+       // Creating a butto with eventhandler for archive action
+      const Archive=document.createElement("button");
+      Archive.innerHTML=`Move to Inbox`
+      Archive.className="btn btn-outline-warning"
+      Archive.addEventListener("click",function (){
+        fetch(`/emails/${email.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              archived: false
+          })
+        })
+        
+        load_mailbox("inbox")
+        
+      })
+      document.querySelector('#email-id-view').append(Archive);
+    }
+   
+    
   })
 }
 
@@ -77,6 +137,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   if (mailbox==="inbox") {
+    
     fetch('/emails/inbox')
     .then(response => response.json())
     .then(emails => {
@@ -86,9 +147,12 @@ function load_mailbox(mailbox) {
         if (emails.read==false) {
           email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
           ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
-          <button id="Archive-${emails.id}"> Archive </button></div>`;
-
-        email.addEventListener("click",function() {
+          </div>
+          <button id="Archive-${emails.id}"> Archive </button>`;
+        document.querySelector("#emails-view").append(email);
+        //Creatin the eventlistener for emails.
+        email_info=document.querySelector(`#item-${emails.id}`)
+        email_info.addEventListener("click",function() {
           if (emails.read==false){
             fetch(`/emails/${emails.id}`,{
               method: 'PUT',
@@ -97,10 +161,9 @@ function load_mailbox(mailbox) {
               })
             })
             
-          } 
+          }
           load_email_id(`${emails.id}`)
         })
-        document.querySelector("#emails-view").append(email);
         // Creating a butto with eventhandler for archive action
         archive_button=document.querySelector(`#Archive-${emails.id}`)
         archive_button.addEventListener("click",function() {
@@ -110,13 +173,20 @@ function load_mailbox(mailbox) {
                 archived: true
             })
           })
-          load_mailbox("archive")
+          
+          load_mailbox("inbox")
+          
         })
+        
         } else {
           email.innerHTML=`<div class="card-body email-readed" id="item-${emails.id}">
           ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
-          <button id="Archive-${emails.id}"> Archive </button></div>`;
-          email.addEventListener("click",function() {
+          </div>
+          <button id="Archive-${emails.id}"> Archive </button>`;
+          document.querySelector("#emails-view").append(email);
+          //Creatin the eventlistener for emails.
+          email_info=document.querySelector(`#item-${emails.id}`)
+          email_info.addEventListener("click",function() {
             if (emails.read==false){
               fetch(`/emails/${emails.id}`,{
                 method: 'PUT',
@@ -128,7 +198,6 @@ function load_mailbox(mailbox) {
             }
             load_email_id(`${emails.id}`)
           })
-          document.querySelector("#emails-view").append(email);
           // Creating a butto with eventhandler for archive action
           archive_button=document.querySelector(`#Archive-${emails.id}`)
           archive_button.addEventListener("click",function() {
@@ -138,7 +207,10 @@ function load_mailbox(mailbox) {
                 archived: true
             })
           })
-          load_mailbox("archive")
+          
+          load_mailbox("inbox")
+          
+          
         })
         } 
         
@@ -175,10 +247,13 @@ function load_mailbox(mailbox) {
         const email = document.createElement("div");
         if (emails.read==false) {
           email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
-          ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
-          <button id="Archive-${emails.id}"> Archive </button></div>`;
-
-        email.addEventListener("click",function() {
+          ${emails.sender} this is archive | ${emails.subject} | ${emails.timestamp}
+          </div>
+          <button id="Archive-${emails.id}"> Archive </button>`;
+        document.querySelector("#emails-view").append(email);
+        //Creatin the eventlistener for emails.
+        email_info=document.querySelector(`#item-${emails.id}`)
+        email_info.addEventListener("click",function() {
           if (emails.read==false){
             fetch(`/emails/${emails.id}`,{
               method: 'PUT',
@@ -187,10 +262,9 @@ function load_mailbox(mailbox) {
               })
             })
             
-          } 
+          }
           load_email_id(`${emails.id}`)
         })
-        document.querySelector("#emails-view").append(email);
         // Creating a butto with eventhandler for archive action
         archive_button=document.querySelector(`#Archive-${emails.id}`)
         archive_button.addEventListener("click",function() {
@@ -204,9 +278,13 @@ function load_mailbox(mailbox) {
         })
         } else {
           email.innerHTML=`<div class="card-body email-readed" id="item-${emails.id}">
-          ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
-          <button id="Archive-${emails.id}"> Archive </button></div>`;
-          email.addEventListener("click",function() {
+          ${emails.sender} this is archive | ${emails.subject} | ${emails.timestamp}
+          </div>
+          <button id="Archive-${emails.id}"> Archive </button>`;
+          document.querySelector("#emails-view").append(email);
+          //Creatin the eventlistener for emails.
+          email_info=document.querySelector(`#item-${emails.id}`)
+          email_info.addEventListener("click",function() {
             if (emails.read==false){
               fetch(`/emails/${emails.id}`,{
                 method: 'PUT',
@@ -218,7 +296,6 @@ function load_mailbox(mailbox) {
             }
             load_email_id(`${emails.id}`)
           })
-          document.querySelector("#emails-view").append(email);
           // Creating a butto with eventhandler for archive action
           archive_button=document.querySelector(`#Archive-${emails.id}`)
           archive_button.addEventListener("click",function() {
