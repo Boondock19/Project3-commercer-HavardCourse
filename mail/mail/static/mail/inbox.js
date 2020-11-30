@@ -65,8 +65,8 @@ function load_email_id(id) {
       document.querySelector('#email-id-view').append(email_body);
       // Creating a butto with eventhandler for reply action
       const Reply=document.createElement("button");
-      Reply.className="btn btn-outline-dark"
-      Reply.innerHTML=`REPLY`
+      Reply.className="btn btn-outline-dark reply"
+      Reply.innerHTML=`Reply`
       Reply.addEventListener("click", function(){
         ReplyEmail(email.sender,email.subject,email.body,email.timestamp)
       }) 
@@ -102,7 +102,7 @@ function load_email_id(id) {
       // Creating a butto with eventhandler for reply action
       const Reply=document.createElement("button");
       Reply.className="btn btn-outline-dark"
-      Reply.innerHTML=`REPLY`
+      Reply.innerHTML=`Reply`
       Reply.addEventListener("click", function(){
         ReplyEmail(email.sender,email.subject,email.body,email.timestamp)
       }) 
@@ -152,7 +152,7 @@ function load_mailbox(mailbox) {
         const email = document.createElement("div");
         if (emails.read==false) {
           email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
-          ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
+          ${emails.sender} Subject: ${emails.subject} Date:${emails.timestamp}
           </div>`;
         document.querySelector("#emails-view").append(email);
         //Creatin the eventlistener for emails.
@@ -172,7 +172,7 @@ function load_mailbox(mailbox) {
         
         } else {
           email.innerHTML=`<div class="card-body email-readed" id="item-${emails.id}">
-          ${emails.sender} this is inbox | ${emails.subject} | ${emails.timestamp}
+          ${emails.sender}  Subject: ${emails.subject} Date: ${emails.timestamp}
           </div>`;
           document.querySelector("#emails-view").append(email);
           //Creatin the eventlistener for emails.
@@ -205,7 +205,7 @@ function load_mailbox(mailbox) {
         const email = document.createElement("div");
         email.className="Email";
         email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
-        ${emails.recipients} this is sent | ${emails.subject} | ${emails.timestamp}
+        ${emails.recipients} Subject: ${emails.subject} Date: ${emails.timestamp}
         </div>`;
         email.addEventListener("click",function() {
           load_email_id(`${emails.id}`)
@@ -224,7 +224,7 @@ function load_mailbox(mailbox) {
         const email = document.createElement("div");
         if (emails.read==false) {
           email.innerHTML=`<div class="card-body email" id="item-${emails.id}">
-          ${emails.sender} this is archive | ${emails.subject} | ${emails.timestamp}
+          ${emails.sender}  Subject: ${emails.subject} Date: ${emails.timestamp}
           </div>`;
         document.querySelector("#emails-view").append(email);
         //Creatin the eventlistener for emails.
@@ -244,7 +244,7 @@ function load_mailbox(mailbox) {
 
         } else {
           email.innerHTML=`<div class="card-body email-readed" id="item-${emails.id}">
-          ${emails.sender} this is archive | ${emails.subject} | ${emails.timestamp}
+          ${emails.sender} Subject: ${emails.subject} Date: ${emails.timestamp}
           </div>`;
           document.querySelector("#emails-view").append(email);
           //Creatin the eventlistener for emails.
@@ -269,9 +269,6 @@ function load_mailbox(mailbox) {
 }
     
     
-    const header5 = document.createElement("h5");
-    header5.innerHTML="This is the testing of inbox page ";
-    document.querySelector("#emails-view").append(header5);
 }
 
 function ReplyEmail(sender,subject,body,timestamp) {
@@ -280,13 +277,13 @@ function ReplyEmail(sender,subject,body,timestamp) {
   if (regex.test(subject)){
     document.querySelector('#compose-recipients').value=sender
     document.querySelector('#compose-subject').value=subject
-    document.querySelector('#compose-body').value= `On ${timestamp}, ${sender}  wrote: 
+    document.querySelector('#compose-body').value= `<p id="emailtext" >On ${timestamp}, ${sender}  wrote:</p>
     ${body} `
   }
   else {
     document.querySelector('#compose-recipients').value=sender
     document.querySelector('#compose-subject').value=`RE: ${subject}`
-    document.querySelector('#compose-body').value=`On ${timestamp}, ${sender}  wrote: 
-    ${body} `
+    document.querySelector('#compose-body').value=`<p id="emailtext" >On ${timestamp}, ${sender}  wrote:</p>  
+    ${body}`
   }
 }

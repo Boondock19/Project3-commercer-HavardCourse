@@ -10,8 +10,13 @@ div .email {
 }
 
 div .email-readed {
-    background-color: rgb(119, 117, 117);
+    background-color: rgb(207, 207, 207);
     margin: 5px;
     border: solid;
     border-color: black;
+}
+
+.reply {
+    margin-left: 5px;
+    margin-right: 10px;
 }
