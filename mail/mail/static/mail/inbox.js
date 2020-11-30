@@ -101,7 +101,7 @@ function load_email_id(id) {
       document.querySelector('#email-id-view').append(email_body);
       // Creating a butto with eventhandler for reply action
       const Reply=document.createElement("button");
-      Reply.className="btn btn-outline-dark"
+      Reply.className="btn btn-outline-dark reply"
       Reply.innerHTML=`Reply`
       Reply.addEventListener("click", function(){
         ReplyEmail(email.sender,email.subject,email.body,email.timestamp)
@@ -277,13 +277,13 @@ function ReplyEmail(sender,subject,body,timestamp) {
   if (regex.test(subject)){
     document.querySelector('#compose-recipients').value=sender
     document.querySelector('#compose-subject').value=subject
-    document.querySelector('#compose-body').value= `<p id="emailtext" >On ${timestamp}, ${sender}  wrote:</p>
+    document.querySelector('#compose-body').value= `On ${timestamp}, ${sender}  wrote:
     ${body} `
   }
   else {
     document.querySelector('#compose-recipients').value=sender
     document.querySelector('#compose-subject').value=`RE: ${subject}`
-    document.querySelector('#compose-body').value=`<p id="emailtext" >On ${timestamp}, ${sender}  wrote:</p>  
+    document.querySelector('#compose-body').value=`On ${timestamp}, ${sender}  wrote:  
     ${body}`
   }
 }
